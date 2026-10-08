@@ -559,13 +559,13 @@
           "file": "traces/retrieval/shared-practice-dense.jsonl",
           "system": "dense",
           "spans": 20,
-          "seconds": 0.1412
+          "seconds": 0.1589
         },
         {
           "file": "traces/retrieval/shared-practice-hybrid.jsonl",
           "system": "hybrid",
           "spans": 20,
-          "seconds": 0.2453
+          "seconds": 0.2491
         }
       ]
     },

@@ -34,6 +34,7 @@ from p2.retrievers import ChunkScorer
 NEEDS_CLAUDE = False
 
 MODEL = embed.BGE  # bge-small-en-v1.5: reads each word in context, which is what the paraphrase queries need
+DECIMALS = 5  # the precision the cosine reproduces on another machine; see score_chunks
 
 
 class Dense(ChunkScorer):
@@ -42,15 +43,34 @@ class Dense(ChunkScorer):
         settings = cfg.table("dense")
         self.model = str(settings.get("model", MODEL))
         self.query_instruction = str(settings.get("query_instruction", ""))
+        self.decimals = int(settings.get("decimals", DECIMALS))
         self.embedder = embed.load(self.model)
         # One row per chunk, in the order of self.chunks, from the cache where possible.
         self.vectors = embed.doc_vectors(self.embedder, [c.text for c in self.chunks], cfg.root)
 
     def score_chunks(self, text: str) -> list[float]:
+        """Cosine of the query against every chunk, rounded to the precision that reproduces.
+
+        The rounding is what makes a run file reproducible on a machine that is not this one, and
+        `p2 check` and CI both regenerate the runs and compare them line by line. This corpus writes
+        the same rule once for each of parts 56, 57, 75 and 77, so it is full of near-duplicate
+        sections whose cosines land within a millionth of each other: on p07, cfr30-74.7 scored
+        0.7060505 and cfr30-57.5005t 0.7060485, a gap of 2e-6. The embedding arithmetic differs by
+        about that much between this laptop's ARM chip and CI's x86 Linux, so the two sections swap
+        places there, which moves them between ranks 10 and 11 and changes which one hybrid's fused
+        top 10 keeps. runfile.order already settles exact ties by docid, so rounding to a precision
+        coarser than the noise turns a coin flip into that deterministic tie-break.
+
+        5 decimals was measured, not guessed: perturbing every score by +/-3e-6 over 30 trials of
+        the 20 practice queries moves the top 10 on 9 of 600 query-runs unrounded and 0 of 600 at
+        5 decimals, while the per-class scores are identical to three decimals at every precision
+        from 2 to 6. It holds to 3e-6 and starts to slip at 5e-6, so if CI ever disagrees with a
+        committed run again, this is the number to lower.
+        """
         if not self.chunks:
             return []
         query = self.embedder.encode([self.query_instruction + text])[0]
-        return (self.vectors @ query).tolist()
+        return [round(float(s), self.decimals) for s in self.vectors @ query]
 
 
 def build(corpus, cfg):
