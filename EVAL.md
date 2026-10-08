@@ -36,7 +36,7 @@ Scores per system.
 | --- | ---: | ---: | ---: |
 | bm25 | 0.625 | 0.507 | 0.518 |
 | dense | 0.558 | 0.562 | 0.480 |
-| hybrid | 0.817 | 0.668 | 0.639 |
+| hybrid | 0.817 | 0.693 | 0.649 |
 
 20 judged queries; nDCG uses binary labels; a random ranking of the 2,484 documents would get recall@10 near 0.004.
 <!-- p2:end shared-practice -->
@@ -53,8 +53,8 @@ The same scores per query class.
 | dense | MRR@10 | 0.333 | 0.714 | 0.653 |
 | dense | nDCG@10 | 0.211 | 0.593 | 0.661 |
 | hybrid | Recall@10 | 1.000 | 0.548 | 0.917 |
-| hybrid | MRR@10 | 0.695 | 0.571 | 0.750 |
-| hybrid | nDCG@10 | 0.714 | 0.473 | 0.746 |
+| hybrid | MRR@10 | 0.695 | 0.643 | 0.750 |
+| hybrid | nDCG@10 | 0.720 | 0.497 | 0.746 |
 <!-- p2:end shared-practice-classes -->
 
 Differences between every pair of systems, each with its paired interval and the minimum detectable difference.
@@ -66,11 +66,11 @@ Differences between every pair of systems, each with its paired interval and the
 | dense minus bm25 | MRR@10 | +0.055 | [-0.225, +0.343] | 0.412 | not distinguishable |
 | dense minus bm25 | nDCG@10 | -0.039 | [-0.302, +0.231] | 0.385 | not distinguishable |
 | hybrid minus bm25 | Recall@10 | +0.192 | [+0.050, +0.358] | 0.223 | hybrid higher |
-| hybrid minus bm25 | MRR@10 | +0.161 | [-0.005, +0.352] | 0.261 | not distinguishable |
-| hybrid minus bm25 | nDCG@10 | +0.121 | [-0.017, +0.277] | 0.215 | not distinguishable |
+| hybrid minus bm25 | MRR@10 | +0.186 | [+0.008, +0.390] | 0.283 | hybrid higher |
+| hybrid minus bm25 | nDCG@10 | +0.131 | [-0.008, +0.290] | 0.219 | not distinguishable |
 | hybrid minus dense | Recall@10 | +0.258 | [+0.083, +0.450] | 0.270 | hybrid higher |
-| hybrid minus dense | MRR@10 | +0.106 | [-0.046, +0.275] | 0.232 | not distinguishable |
-| hybrid minus dense | nDCG@10 | +0.159 | [+0.018, +0.309] | 0.210 | hybrid higher |
+| hybrid minus dense | MRR@10 | +0.131 | [-0.008, +0.289] | 0.215 | not distinguishable |
+| hybrid minus dense | nDCG@10 | +0.170 | [+0.034, +0.318] | 0.204 | hybrid higher |
 
 The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end shared-practice-pairs -->
@@ -250,7 +250,7 @@ Systems that do not call Claude, from traces/retrieval/ on the machine that last
 | --- | --- | ---: | ---: | ---: |
 | traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.04 | 1.9 |
 | traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.16 | 7.9 |
-| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.25 | 12.5 |
+| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.22 | 10.9 |
 <!-- p2:end stretch-cost -->
 
 ### The grep agent (option 5)

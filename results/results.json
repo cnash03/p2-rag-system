@@ -281,21 +281,21 @@
           "run": "runs/shared/hybrid.practice.trec",
           "mean": {
             "recall@10": 0.816667,
-            "mrr@10": 0.668333,
-            "ndcg@10": 0.63898
+            "mrr@10": 0.693333,
+            "ndcg@10": 0.649424
           },
           "by_class": {
             "identifier": {
               "n": 7,
               "recall@10": 1.0,
               "mrr@10": 0.695238,
-              "ndcg@10": 0.713556
+              "ndcg@10": 0.719628
             },
             "paraphrase": {
               "n": 7,
               "recall@10": 0.547619,
-              "mrr@10": 0.571429,
-              "ndcg@10": 0.472888
+              "mrr@10": 0.642857,
+              "ndcg@10": 0.496656
             },
             "mixed": {
               "n": 6,
@@ -307,8 +307,8 @@
           "per_query": {
             "p01": {
               "recall@10": 1.0,
-              "mrr@10": 1.0,
-              "ndcg@10": 0.877215
+              "mrr@10": 0.5,
+              "ndcg@10": 0.650921
             },
             "p02": {
               "recall@10": 1.0,
@@ -332,8 +332,8 @@
             },
             "p06": {
               "recall@10": 1.0,
-              "mrr@10": 0.5,
-              "ndcg@10": 0.650921
+              "mrr@10": 1.0,
+              "ndcg@10": 0.919721
             },
             "p07": {
               "recall@10": 1.0,
@@ -342,13 +342,13 @@
             },
             "p08": {
               "recall@10": 0.666667,
-              "mrr@10": 0.5,
-              "ndcg@10": 0.498189
+              "mrr@10": 1.0,
+              "ndcg@10": 0.703918
             },
             "p09": {
               "recall@10": 0.666667,
-              "mrr@10": 0.5,
-              "ndcg@10": 0.498189
+              "mrr@10": 1.0,
+              "ndcg@10": 0.703918
             },
             "p10": {
               "recall@10": 0.0,
@@ -357,8 +357,8 @@
             },
             "p11": {
               "recall@10": 1.0,
-              "mrr@10": 1.0,
-              "ndcg@10": 0.850345
+              "mrr@10": 0.5,
+              "ndcg@10": 0.60526
             },
             "p12": {
               "recall@10": 0.5,
@@ -470,27 +470,27 @@
           "b": "bm25",
           "metric": "mrr@10",
           "n": 20,
-          "mean_diff": 0.16119,
+          "mean_diff": 0.18619,
           "ci95": [
-            -0.005,
-            0.352381
+            0.008214,
+            0.390357
           ],
-          "sd_diff": 0.416396,
-          "mdd80": 0.260853,
-          "reading": "not distinguishable"
+          "sd_diff": 0.451351,
+          "mdd80": 0.282751,
+          "reading": "hybrid higher"
         },
         {
           "a": "hybrid",
           "b": "bm25",
           "metric": "ndcg@10",
           "n": 20,
-          "mean_diff": 0.12067,
+          "mean_diff": 0.131114,
           "ci95": [
-            -0.017285,
-            0.277377
+            -0.008198,
+            0.289651
           ],
-          "sd_diff": 0.343764,
-          "mdd80": 0.215352,
+          "sd_diff": 0.349582,
+          "mdd80": 0.218997,
           "reading": "not distinguishable"
         },
         {
@@ -512,13 +512,13 @@
           "b": "dense",
           "metric": "mrr@10",
           "n": 20,
-          "mean_diff": 0.105833,
+          "mean_diff": 0.130833,
           "ci95": [
-            -0.045833,
-            0.275
+            -0.008333,
+            0.289208
           ],
-          "sd_diff": 0.370959,
-          "mdd80": 0.232388,
+          "sd_diff": 0.343838,
+          "mdd80": 0.215398,
           "reading": "not distinguishable"
         },
         {
@@ -526,13 +526,13 @@
           "b": "dense",
           "metric": "ndcg@10",
           "n": 20,
-          "mean_diff": 0.159368,
+          "mean_diff": 0.169812,
           "ci95": [
-            0.018311,
-            0.308637
+            0.034023,
+            0.318219
           ],
-          "sd_diff": 0.334573,
-          "mdd80": 0.209594,
+          "sd_diff": 0.326428,
+          "mdd80": 0.204492,
           "reading": "hybrid higher"
         }
       ]
@@ -565,7 +565,7 @@
           "file": "traces/retrieval/shared-practice-hybrid.jsonl",
           "system": "hybrid",
           "spans": 20,
-          "seconds": 0.2491
+          "seconds": 0.2179
         }
       ]
     },
