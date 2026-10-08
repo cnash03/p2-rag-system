@@ -972,13 +972,13 @@
           "file": "traces/retrieval/shared-practice-dense.jsonl",
           "system": "dense",
           "spans": 20,
-          "seconds": 0.1674
+          "seconds": 0.1707
         },
         {
           "file": "traces/retrieval/shared-practice-hybrid.jsonl",
           "system": "hybrid",
           "spans": 20,
-          "seconds": 0.2253
+          "seconds": 0.2206
         },
         {
           "file": "traces/retrieval/shared-test-bm25.jsonl",
@@ -990,13 +990,13 @@
           "file": "traces/retrieval/shared-test-dense.jsonl",
           "system": "dense",
           "spans": 40,
-          "seconds": 0.3293
+          "seconds": 0.3512
         },
         {
           "file": "traces/retrieval/shared-test-hybrid.jsonl",
           "system": "hybrid",
           "spans": 40,
-          "seconds": 0.4169
+          "seconds": 0.451
         }
       ]
     },

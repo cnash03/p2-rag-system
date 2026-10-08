@@ -35,7 +35,7 @@ NEEDS_CLAUDE = False
 
 MODEL = embed.BGE  # bge-small-en-v1.5: reads each word in context, which is what the paraphrase queries need
 DECIMALS = 5  # decimals kept in a snapped score, so the run file's own numbers reproduce
-TOLERANCE = 1e-3  # scores closer than this are one score; see score_chunks
+TOLERANCE = 1e-4  # scores closer than this are one score; see score_chunks
 
 
 class Dense(ChunkScorer):
@@ -84,13 +84,23 @@ class Dense(ChunkScorer):
         Comparing against the leader rather than the previous score keeps a group no wider than the
         tolerance, so a long chain of small steps cannot collapse a whole range.
 
-        The tolerance was measured on hybrid's docid-to-score map, the thing the checker compares,
-        over 40 trials of all 60 shared queries. Perturbing every score by +/-3e-6, the noise above,
-        changes it on 24 of 2,400 query-runs under the 5-decimal rounding that failed CI, and 0 of
-        2,400 at this tolerance, which also holds at 1e-5. The practice scores are identical to
-        three decimals at 1e-4 and 1e-3 (hybrid 0.693 MRR@10, 0.817 recall@10); 1e-2 is too coarse
-        and costs real accuracy (0.671). If CI ever disagrees with a committed run again, raise this
-        before touching anything else.
+        Snapping has a boundary of its own, and it decides the tolerance. A pair sitting almost
+        exactly self.tolerance apart can fall inside one group here and outside it on CI, and the
+        score written then moves by up to the tolerance. p2/check.py:53 sets SCORE_TOLERANCE = 1e-3
+        and fails at a difference of 1e-3 or more, so a tolerance of 1e-3 puts that flip right on
+        the failure line, which is the third red CI run (t13: 0.556590 against 0.555570, 1.02e-3
+        apart, that is this exact mistake).
+
+        So the tolerance is squeezed from both sides, and both numbers are measured:
+        - well ABOVE the 3e-6 noise, so near-duplicates tie and hybrid's ranks hold. On hybrid's
+          docid-to-score map, which is what the checker compares, 40 trials of all 60 shared
+          queries perturbed by +/-3e-6 change it on 24 of 2,400 query-runs under plain 5-decimal
+          rounding and 0 of 2,400 here;
+        - well BELOW the checker's 1e-3, so a group flip's score change is forgiven rather than
+          failing. At 1e-4 that worst case is 10x inside the tolerance, by construction.
+        1e-4 sits 33x above the one and 10x below the other. Accuracy is untouched (hybrid 0.693
+        MRR@10 and 0.817 recall@10, the same as unsnapped); 1e-2 is too coarse and does cost
+        accuracy (0.671), so there is about one order of magnitude of room either side.
         """
         if not self.chunks:
             return []
