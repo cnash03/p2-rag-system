@@ -279,10 +279,10 @@ Systems that do not call Claude, from traces/retrieval/ on the machine that last
 | Trace | System | Queries | Seconds | Milliseconds per query |
 | --- | --- | ---: | ---: | ---: |
 | traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.04 | 1.9 |
-| traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.16 | 7.9 |
-| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.22 | 10.9 |
+| traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.17 | 8.4 |
+| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.23 | 11.3 |
 | traces/retrieval/shared-test-bm25.jsonl | bm25 | 40 | 0.08 | 2.0 |
-| traces/retrieval/shared-test-dense.jsonl | dense | 40 | 0.40 | 10.0 |
+| traces/retrieval/shared-test-dense.jsonl | dense | 40 | 0.33 | 8.2 |
 | traces/retrieval/shared-test-hybrid.jsonl | hybrid | 40 | 0.42 | 10.4 |
 <!-- p2:end stretch-cost -->
 
