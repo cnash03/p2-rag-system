@@ -104,7 +104,9 @@ TODO: write what the practice-query intervals let you claim.
 ## 2. Stage 1 - cited answers on the 12 shared questions
 
 <!-- p2:begin answers -->
-_No answers files yet: run `uv run p2 answer --corpus shared --system NAME`, then `uv run p2 score`._
+| Label | System | Verified (in) | 95% interval | not_found (in) | Declined (out) | 95% interval | Quotes found |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| hybrid | hybrid | 7 of 8 (88%) | [0.529, 0.978] | 1 of 8 (12%) | 4 of 4 (100%) | [0.510, 1.000] | 10 of 10 |
 <!-- p2:end answers -->
 
 Which system answered, and why that one?
@@ -259,6 +261,7 @@ Every trace in traces/ that records a Claude call:
 
 | Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| traces/answers-hybrid.jsonl | hybrid | 12 | 12 | 2 | 103,664 | 3,061 | 52.9 | 8,639 | 255 | 4.4 |
 | traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 0 | 327,780 | 2,266 | 77.1 | 16,389 | 113 | 3.9 |
 | traces/shared-test-rerank.jsonl | rerank | 40 | 40 | 0 | 614,886 | 4,416 | 150.6 | 15,372 | 110 | 3.8 |
 
