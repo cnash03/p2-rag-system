@@ -37,6 +37,7 @@ Scores per system.
 | bm25 | 0.625 | 0.507 | 0.518 |
 | dense | 0.558 | 0.562 | 0.480 |
 | hybrid | 0.817 | 0.693 | 0.649 |
+| rerank | 0.783 | 0.850 | 0.789 |
 
 20 judged queries; nDCG uses binary labels; a random ranking of the 2,484 documents would get recall@10 near 0.004.
 <!-- p2:end shared-practice -->
@@ -55,6 +56,9 @@ The same scores per query class.
 | hybrid | Recall@10 | 1.000 | 0.548 | 0.917 |
 | hybrid | MRR@10 | 0.695 | 0.643 | 0.750 |
 | hybrid | nDCG@10 | 0.720 | 0.497 | 0.746 |
+| rerank | Recall@10 | 0.857 | 0.595 | 0.917 |
+| rerank | MRR@10 | 0.857 | 0.714 | 1.000 |
+| rerank | nDCG@10 | 0.828 | 0.626 | 0.936 |
 <!-- p2:end shared-practice-classes -->
 
 Differences between every pair of systems, each with its paired interval and the minimum detectable difference.
@@ -71,6 +75,15 @@ Differences between every pair of systems, each with its paired interval and the
 | hybrid minus dense | Recall@10 | +0.258 | [+0.083, +0.450] | 0.270 | hybrid higher |
 | hybrid minus dense | MRR@10 | +0.131 | [-0.008, +0.289] | 0.215 | not distinguishable |
 | hybrid minus dense | nDCG@10 | +0.170 | [+0.034, +0.318] | 0.204 | hybrid higher |
+| rerank minus bm25 | Recall@10 | +0.158 | [-0.042, +0.358] | 0.294 | not distinguishable |
+| rerank minus bm25 | MRR@10 | +0.343 | [+0.100, +0.576] | 0.344 | rerank higher |
+| rerank minus bm25 | nDCG@10 | +0.271 | [+0.050, +0.480] | 0.313 | rerank higher |
+| rerank minus dense | Recall@10 | +0.225 | [+0.075, +0.400] | 0.238 | rerank higher |
+| rerank minus dense | MRR@10 | +0.287 | [+0.117, +0.471] | 0.259 | rerank higher |
+| rerank minus dense | nDCG@10 | +0.310 | [+0.157, +0.476] | 0.233 | rerank higher |
+| rerank minus hybrid | Recall@10 | -0.033 | [-0.150, +0.050] | 0.150 | not distinguishable |
+| rerank minus hybrid | MRR@10 | +0.157 | [-0.029, +0.333] | 0.268 | not distinguishable |
+| rerank minus hybrid | nDCG@10 | +0.140 | [-0.018, +0.280] | 0.219 | not distinguishable |
 
 The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end shared-practice-pairs -->
@@ -242,7 +255,24 @@ _No judged answers yet (stretch option 2): `uv run p2 judge answers/shared/LABEL
 The Claude calls, tokens and seconds in every trace you committed, and what a cheaper system or answers file saves against what it loses.
 
 <!-- p2:begin stretch-cost -->
-_No Claude traces yet: a run of a system that calls Claude, `p2 answer` and `p2 judge` write them in traces/, and then `uv run p2 score` fills this table._
+Every trace in traces/ that records a Claude call:
+
+| Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 0 | 327,780 | 2,266 | 77.1 | 16,389 | 113 | 3.9 |
+| traces/shared-test-rerank.jsonl | rerank | 40 | 40 | 0 | 614,886 | 4,416 | 150.6 | 15,372 | 110 | 3.8 |
+
+A span is one query of a run, one question of an answers file, or one claim of a judged file. A saved reply costs nothing now, so it counts the tokens and the seconds of the call that made it.
+
+Every pair of systems on the same queries where at least one calls Claude, the one with fewer Claude input tokens per query first:
+
+| Cheaper minus dearer | Queries | MRR@10 difference | 95% interval | Input tokens saved per query | Seconds saved per query | Reading |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| shared practice: bm25 minus rerank | 20 | -0.343 | [-0.576, -0.100] | 16,389 | 3.9 | rerank higher |
+| shared practice: dense minus rerank | 20 | -0.287 | [-0.471, -0.117] | 16,389 | 3.9 | rerank higher |
+| shared practice: hybrid minus rerank | 20 | -0.157 | [-0.333, +0.029] | 16,389 | 3.9 | not distinguishable |
+
+The difference is the cheaper system's score minus the dearer one's, with its paired interval; the savings count Claude calls only, so a system that makes none saves all of the other's.
 
 Systems that do not call Claude, from traces/retrieval/ on the machine that last ran `p2 score` (git ignores that folder, so `p2 check` does not compare this part):
 
