@@ -1,0 +1,100 @@
+# mcs2025 yttrium - Mineral Commodity Summaries 2025
+
+Prepared by Shelby N. Johnston [Contact Daniel J. Cordier, (703) 648–7707, dcordier@usgs.gov]
+YTTRIUM1
+[Data in metric tons, yttrium oxide (Y2O3) equivalent, unless otherwise specified]
+Domestic Production and Use: Yttrium is one of the rare-earth elements. Bastnaesite (or bastnäsite), a rare-earth
+fluorocarbonate mineral, was mined in 2024 as a primary product at the Mountain Pass Mine in California, which was
+restarted in the first quarter of 2018 after being put on care-and-maintenance status in the fourth quarter of 2015. Yttrium
+was estimated to represent about 0.12% of the rare-earth elements in the Mountain Pass bastnaesite ore. Insufficient
+information was available to determine the yttrium content of the bastnaesite ore production. Monazite, a rare-earth
+phosphate mineral, was produced as a separated concentrate that includes yttrium-rich xenotime as part of heavymineral-sand concentrates in Florida. There was no fully commercial rare-earth separation facility in the United States,
+and rare-earth concentrates were exported for processing.
+The leading end uses of yttrium were in catalysts, ceramics, electronics, lasers, metallurgy, and phosphors. In
+ceramic applications, yttrium compounds were used in abrasives, bearings and seals, high-temperature refractories
+for continuous-casting nozzles, jet-engine coatings, oxygen sensors in automobile engines, and wear-resistant and
+corrosion-resistant cutting tools. In electronics, yttrium-iron garnets were components in microwave radar to control
+high-frequency signals. Yttrium was an important component in yttrium-aluminum-garnet laser crystals used in dental
+and medical surgical procedures, digital communications, distance and temperature sensing, industrial cutting and
+welding, nonlinear optics, photochemistry, and photoluminescence. In metallurgical applications, yttrium was used as
+a grain-refining additive and as a deoxidizer. Yttrium was used in heating-element alloys, high-temperature
+superconductors, and superalloys. Yttrium was used in phosphor compounds for flat-panel displays and various
+lighting applications.
+Salient Statistics—United States: 2020 2021 2022 2023 2024e
+Production, mine NA NA NA NA NA
+Imports for consumption, yttrium, alloys, compounds, and metale, 2 650 670 1,200 250 470
+Exports, compoundse, 3 1 9 4 20 43
+Consumption, apparente, 5 600 700 1,000 200 500
+Price, average, dollars per kilogram:6
+Y2O3, minimum 99.999% purity 3 6 12 8 6
+Yttrium metal, minimum 99.9% purity 34 39 41 33 33
+Net import reliance7, 8 as a percentage of apparent consumption 100 100 100 100 100
+Recycling: Insignificant.
+Import Sources (2020–23):9 Yttrium compounds: China,10 93%; Germany, 3%; and other, 4%. Nearly all imports of
+yttrium metal and compounds are derived from mineral concentrates processed in China. Import sources do not include
+yttrium contained in value-added intermediates and finished products.
+Tariff: Item Number Normal Trade Relations
+12–31–24
+Rare-earth metals, unspecified:
+Not alloyed 2805.30.0050 5% ad valorem.
+Alloyed 2805.30.0090 5% ad valorem.
+Mixtures of rare-earth oxides containing yttrium
+or scandium as the predominant metal
+2846.90.2015 Free.
+Mixtures of rare-earth chlorides containing
+yttrium or scandium as the predominant metal
+2846.90.2082 Free.
+Yttrium-bearing materials and compounds
+containing by weight >19% to <85% Y2O3
+2846.90.4000 Free.
+Other rare-earth compounds, including yttrium
+and other compounds
+2846.90.8090 3.7% ad valorem.
+Depletion Allowance: Monazite, thorium content, 22% (domestic), 14% (foreign); yttrium, rare-earth content, 14%
+(domestic and foreign); and xenotime, 14% (domestic and foreign).
+198
+YTTRIUM
+U.S. Geological Survey, Mineral Commodity Summaries, January 2025
+Government Stockpile: Not available.
+Events, Trends, and Issues: China produced most of the world’s supply of yttrium from its weathered clay ionadsorption ore deposits in the southern Provinces—primarily Fujian, Guangdong, and Jiangxi—and from a lesser
+number of deposits in Guangxi and Hunan. Yttrium also was produced from similar clay deposits in Burma.
+Globally, yttrium was mainly consumed in the form of oxide compounds for ceramics and phosphors. Lesser amounts
+were consumed in electronic devices, lasers, optical glass, and metallurgical applications. In 2024, the average price
+for Y2O3 decreased whereas the average price for yttrium metal remained the same as that in 2023. China’s Ministry
+of Industry and Information Technology raised quotas for rare-earth mining and separation in 2024 to 270,000 tons
+and 250,000 tons of rare-earth-oxide equivalent, respectively. The yttrium content of the production quota was not
+specified. Mine production quotas allocated 250,850 tons to light rare earths and 19,150 tons to ion-adsorption clays.
+In 2024, China exported an estimated 3,100 tons (Y2O3 equivalent) of yttrium compounds and metal, and the leading
+export destinations were, in descending order, Japan, the United States, the Netherlands, and the Republic of Korea.
+World Mine Production and Reserves:11 World mine production of Y2O3 equivalent contained in rare-earth mineral
+concentrates was estimated to be 15,000 to 20,000 tons. Most of this production took place in China and Burma.
+Global reserves of Y2O3 were not quantified; however, the leading countries for total rare-earth-oxide reserves
+included Australia, Brazil, China, India, Russia, and Vietnam. Although mine production in Burma was significant,
+information on reserves in Burma was not available. Global reserves may be adequate to satisfy near-term demand at
+current rates of production; however, recent high demand of ion-adsorption clay rare earths in Burma and China as
+well as changes in economic conditions, environmental issues, or permitting and trade restrictions could affect the
+availability and pricing of many of the rare-earth elements, including yttrium.
+World Resources:11 Large resources of yttrium in monazite and xenotime are available worldwide in placer deposits,
+carbonatites, uranium ores, and weathered clay deposits (ion-adsorption ore). Additional resources of yttrium occur in
+apatite-magnetite-bearing rocks, deposits of niobium-tantalum minerals, non-placer monazite-bearing deposits,
+sedimentary phosphate deposits, and uranium ores.
+Substitutes: Substitutes for yttrium are available for some applications but generally are much less effective. In most
+uses, especially in electronics, lasers, and phosphors, yttrium is generally not subject to direct substitution by other
+elements. As a stabilizer in zirconia ceramics, Y2O3 may be substituted with calcium oxide or magnesium oxide, but
+the substitutes generally impart lower toughness.
+eEstimated. NA Not available.
+1See also the Rare Earths chapter; trade data for yttrium are included in the data shown for rare earths.
+2Estimated from Trade Mining LLC shipping records.
+3Includes data for the following Schedule B number: 2846.90.2015.
+4Data adjusted by the U.S. Geological Survey to exclude low-value shipments. The U.S. Census Bureau reported 731,000 metric tons of exports
+through September 2024.
+5Defined as imports – exports. Rounded to one significant digit. Yttrium consumed domestically was imported or refined from imported materials.
+6Free on board China. Source: Argus Media Group, Argus Rare Earths.
+7Defined as imports – exports.
+8Domestic production of mineral concentrates was stockpiled or exported. Consumers of compounds and metals were reliant on imports and
+stockpiled inventory of compounds and metals.
+9Includes estimated Y2O3 equivalent from the following Harmonized Tariff Schedule of the United States codes: 2846.90.2015, 2846.90.2082,
+2846.90.4000, 2846.90.8050, and 2846.90.8060 (2020–21); and 2846.90.8075 and 2846.90.8090 (2022–23).
+10Includes Hong Kong.
+11See Appendix C for resource and reserve definitions and information concerning data sources.
+199
