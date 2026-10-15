@@ -25,7 +25,18 @@ The minimum detectable difference is the smallest gap this many queries could re
 
 For each of `dense`, `hybrid` and `rerank`, one or two sentences: the embedding model, how documents were chunked, what was fused and how, how many candidates the reranker saw, and anything you changed from the 12 and 13 lab code.
 
-TODO: describe your three systems.
+**`dense`** embeds 300-word chunks with bge-small-en-v1.5 and ranks them by cosine similarity, which is a plain dot product because the vectors are unit length. Encoding the corpus's 3,132 chunks took 1.9 minutes once and is cached (3,127 distinct chunk texts, since the vector cache is keyed by text hash). I chose bge
+over potion-retrieval-32M because bge reads each word in context while potion averages static token vectors, and context is what a paraphrase query needs. Measuring potion directly confirmed this: with it, `hybrid` fell to 0.522 MRR@10 and
+paraphrase MRR@10 to 0.143. One change from the lab code: `dense` snaps near-equal scores. Walking the scores from best to worst, any score within 10⁻⁴ of its group's leader takes the leader's score. bge runs through ONNX, whose kernels
+differ between my ARM Mac and CI's x86 Linux by about 3×10⁻⁶, and 30 CFR writes many rules several times, so near-duplicate sections sit inside that noise and could swap order between machines. 10⁻⁴ is above that noise, so duplicates tie, and
+below `p2/check.py`'s SCORE_TOLERANCE of 10⁻³, so a flip at the boundary is forgiven.
+
+**`hybrid`** fuses `bm25` and `dense` with reciprocal rank fusion, with two departures from the lab. First, rrf_k = 1 instead of 60: at 60 it scored 0.471 MRR@10, worse than either arm alone, because 1/61 and 1/70 differ by only 13%, so the fused
+top 10 filled with documents both arms ranked moderately and dropped the ones a single arm ranked first. Second, it fuses each arm's top 10 rather than all 2,484 documents, which the stub warns against. It scored better this way (0.693 vs 0.668 MRR@10),
+because at rrf_k = 1 a document ranked 11th by both arms scores 1/12 + 1/12 = 0.167 and would displace one that a single arm ranked 5th.
+
+**`rerank`** sends `hybrid`'s top 20 to Claude for listwise reordering. The reply schema is bounded to positions 1–20 so an out-of-range reply cannot pass silently, and any malformed reply falls back to the first-stage order; I tested that fallback
+offline against 8 malformed replies. Each call uses about 16,400 input tokens on the practice queries and 15,400 on the test queries, about 942,666 for all 60.
 
 ### Practice queries (20)
 
@@ -97,7 +108,21 @@ Which differences are distinguishable from zero and which are not?
 What is the minimum detectable difference at 20 queries, and what does that say about any gap smaller than it?
 Which claim from lecture 12 or 13 did your numbers support, and which did they leave open?
 
-TODO: write what the practice-query intervals let you claim.
+**Not distinguishable on this gold set.** `dense` against `bm25` on every score; `hybrid` against `bm25` on nDCG@10 and against `dense` on MRR@10;
+`rerank` against `bm25` on recall@10; and `rerank` against `hybrid` on every score. The last is the one that matters most: `rerank` is 0.157 ahead on MRR@10 and
+0.140 on nDCG@10, at about 16,400 input tokens and 3.9 seconds per query, but both intervals include zero ([−0.029, +0.333] and [−0.018, +0.280]).
+
+**What 20 queries can see.** The minimum detectable difference ranges from 0.150 (`rerank` vs `hybrid`, recall@10) to 0.415 (`dense` vs `bm25`, recall@10), and is above
+0.2 for most pairs. Any gap smaller than that is invisible to this gold set, not shown to be absent. `rerank` vs `hybrid` is the clearest case: its observed gaps (0.157
+and 0.140) are well below their MDDs (0.268 and 0.219), so the data neither show a gain nor rule one out. `dense` vs `bm25` is the extreme: an MDD of about 0.41 against
+a mean MRR@10 gap of 0.055, because the two systems disagree so strongly query by query that 20 queries cannot resolve anything smaller.
+
+**Lecture 12's claim that no retriever wins everywhere** is supported, though descriptively, since the per-class tables have no intervals and only 6–7 queries per
+class. `bm25` found a relevant section in the top 10 for all 7 identifier queries and none of the 7 paraphrases, while `dense` reached identifier recall@10 of only 0.214.
+`hybrid` kept identifier recall@10 at 1.000 while scoring 0.643 MRR@10 on paraphrases. **Whether `hybrid` beats both of its arms is only partly supported**: it is
+distinguishable from both on recall@10, but not from `bm25` on nDCG@10 or from `dense` on MRR@10. **Whether reranking is worth its cost is left open** at this gold-set size.
+One more pattern: `rerank` has the best MRR@10 (0.850) but lower recall@10 than `hybrid` (0.783 vs 0.817). It tends to move one relevant section to rank 1 while pushing others
+out of the top 10, though that recall difference (−0.033) is itself not distinguishable from zero.
 
 ---
 
@@ -116,8 +141,24 @@ Then read three in-corpus answers that `uv run p2 verify` passed.
 For each one, open the cited chunk and say whether the quote really supports the claim next to it.
 The check proves a quote is a real piece of the chunk and cannot prove that it supports the claim, so this reading is the part only you can do.
 
-TODO: write your answer choices and your three-answer audit.
+**Which system, and why.** `hybrid` answered. Answering is a recall problem: the right chunk only has to reach the prompt, and all five retrieved
+chunks go into it regardless of order, so `rerank`'s ranking advantage is something the answer prompt never uses. `hybrid` also has slightly higher recall@10
+(0.817 vs 0.783), and `rerank`'s gains over it were not distinguishable from zero. On cost, the 12 answers took 12 Claude calls and about 104,000 input tokens;
+answering from `rerank` would have added a reranking call per question, roughly 230,000 tokens in total.
 
+**The prompt.** I did not change `prompts/answer.txt`, so there is no before-and-after to report. With it as given, 7 of 8 in-corpus questions were verified
+(88%, interval [0.529, 0.978]), 1 of 8 came back not_found, all 4 out-of-corpus questions were declined (interval [0.510, 1.000]), and all 10 quotes were found
+in the chunks they cite. Both intervals are wide because 8 and 4 questions are very few: 4 of 4 is consistent with a true decline rate as low as about half.
+
+**The one not_found (a06).** The question asked for the noise permissible exposure level. The gold section, cfr30-62.101, did reach the prompt (at chunk rank 4 of 5),
+but it is a 632-word Definitions section split into three chunks, and the chunk that was retrieved, #0, holds the action level (85 dBA TWA8), not the answer.
+The permissible exposure level (90 dBA) is in chunk #1, which was not retrieved. Chunk #0 outranked #1 because the action-level definition matches the question's
+wording almost exactly while being the wrong definition. Claude declined rather than report 85 dBA, which is the grounding working as intended; the failure is in
+chunking and retrieval, not in the answer step.
+
+**Three-answer audit.**
+
+TODO: for each of three verified in-corpus answers, give the question, the claim, the quote and its cited chunk, and whether the quote actually supports the claim.
 ---
 
 ## 3. Stage 2 - your corpus and your gold set
