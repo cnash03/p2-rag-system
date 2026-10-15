@@ -1152,6 +1152,120 @@
         "a11": true,
         "a12": true
       }
+    },
+    "shared/hybrid.r1": {
+      "file": "answers/shared/hybrid.r1.json",
+      "corpus": "shared",
+      "system": "hybrid",
+      "model": "sonnet",
+      "n_in": 8,
+      "n_out": 4,
+      "verified": 7,
+      "not_found_in": 1,
+      "declined_out": 4,
+      "claims": 11,
+      "claims_verified": 11,
+      "verified_share": 0.875,
+      "verified_wilson95": [
+        0.529112,
+        0.977583
+      ],
+      "not_found_in_share": 0.125,
+      "declined_out_share": 1.0,
+      "declined_out_wilson95": [
+        0.510109,
+        1.0
+      ],
+      "passed": {
+        "a01": true,
+        "a02": true,
+        "a03": true,
+        "a04": true,
+        "a05": true,
+        "a06": false,
+        "a07": true,
+        "a08": true,
+        "a09": true,
+        "a10": true,
+        "a11": true,
+        "a12": true
+      }
+    },
+    "shared/hybrid.r2": {
+      "file": "answers/shared/hybrid.r2.json",
+      "corpus": "shared",
+      "system": "hybrid",
+      "model": "sonnet",
+      "n_in": 8,
+      "n_out": 4,
+      "verified": 7,
+      "not_found_in": 1,
+      "declined_out": 4,
+      "claims": 10,
+      "claims_verified": 10,
+      "verified_share": 0.875,
+      "verified_wilson95": [
+        0.529112,
+        0.977583
+      ],
+      "not_found_in_share": 0.125,
+      "declined_out_share": 1.0,
+      "declined_out_wilson95": [
+        0.510109,
+        1.0
+      ],
+      "passed": {
+        "a01": true,
+        "a02": true,
+        "a03": true,
+        "a04": true,
+        "a05": true,
+        "a06": false,
+        "a07": true,
+        "a08": true,
+        "a09": true,
+        "a10": true,
+        "a11": true,
+        "a12": true
+      }
+    },
+    "shared/hybrid.r3": {
+      "file": "answers/shared/hybrid.r3.json",
+      "corpus": "shared",
+      "system": "hybrid",
+      "model": "sonnet",
+      "n_in": 8,
+      "n_out": 4,
+      "verified": 7,
+      "not_found_in": 1,
+      "declined_out": 4,
+      "claims": 11,
+      "claims_verified": 11,
+      "verified_share": 0.875,
+      "verified_wilson95": [
+        0.529112,
+        0.977583
+      ],
+      "not_found_in_share": 0.125,
+      "declined_out_share": 1.0,
+      "declined_out_wilson95": [
+        0.510109,
+        1.0
+      ],
+      "passed": {
+        "a01": true,
+        "a02": true,
+        "a03": true,
+        "a04": true,
+        "a05": true,
+        "a06": false,
+        "a07": true,
+        "a08": true,
+        "a09": true,
+        "a10": true,
+        "a11": true,
+        "a12": true
+      }
     }
   },
   "stretch": {
@@ -1170,6 +1284,36 @@
           "input_tokens": 103664,
           "output_tokens": 3061,
           "seconds": 52.9191
+        },
+        {
+          "file": "traces/answers-hybrid.r1.jsonl",
+          "system": "hybrid",
+          "spans": 12,
+          "calls": 12,
+          "saved": 0,
+          "input_tokens": 95226,
+          "output_tokens": 3001,
+          "seconds": 55.5921
+        },
+        {
+          "file": "traces/answers-hybrid.r2.jsonl",
+          "system": "hybrid",
+          "spans": 12,
+          "calls": 12,
+          "saved": 0,
+          "input_tokens": 70170,
+          "output_tokens": 3407,
+          "seconds": 52.3929
+        },
+        {
+          "file": "traces/answers-hybrid.r3.jsonl",
+          "system": "hybrid",
+          "spans": 12,
+          "calls": 12,
+          "saved": 0,
+          "input_tokens": 98426,
+          "output_tokens": 3172,
+          "seconds": 48.5131
         },
         {
           "file": "traces/shared-practice-rerank.jsonl",
@@ -1400,5 +1544,27 @@
       ]
     },
     "agent": {}
+  },
+  "answer_repeats": {
+    "shared/hybrid": {
+      "files": [
+        "answers/shared/hybrid.r1.json",
+        "answers/shared/hybrid.r2.json",
+        "answers/shared/hybrid.r3.json"
+      ],
+      "verified_share": [
+        0.875,
+        0.875,
+        0.875
+      ],
+      "declined_out_share": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "n_repeats": 3,
+      "verified_share_range": 0.0,
+      "declined_out_share_range": 0.0
+    }
   }
 }

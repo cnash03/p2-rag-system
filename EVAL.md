@@ -329,6 +329,9 @@ Every trace in traces/ that records a Claude call:
 | Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | traces/answers-hybrid.jsonl | hybrid | 12 | 12 | 2 | 103,664 | 3,061 | 52.9 | 8,639 | 255 | 4.4 |
+| traces/answers-hybrid.r1.jsonl | hybrid | 12 | 12 | 0 | 95,226 | 3,001 | 55.6 | 7,936 | 250 | 4.6 |
+| traces/answers-hybrid.r2.jsonl | hybrid | 12 | 12 | 0 | 70,170 | 3,407 | 52.4 | 5,848 | 284 | 4.4 |
+| traces/answers-hybrid.r3.jsonl | hybrid | 12 | 12 | 0 | 98,426 | 3,172 | 48.5 | 8,202 | 264 | 4.0 |
 | traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 0 | 327,780 | 2,266 | 77.1 | 16,389 | 113 | 3.9 |
 | traces/shared-practice-rerank.r1.jsonl | rerank | 20 | 20 | 0 | 209,921 | 2,313 | 79.2 | 10,496 | 116 | 4.0 |
 | traces/shared-practice-rerank.r2.jsonl | rerank | 20 | 20 | 0 | 182,207 | 2,006 | 73.6 | 9,110 | 100 | 3.7 |
@@ -403,6 +406,17 @@ Repeated runs of rerank on shared/practice:
 | rerank.r1 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
 | rerank.r2 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
 | rerank.r3 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
+
+Repeated answers shared/hybrid:
+
+| File | Verified (in) | 95% interval | Declined (out) | 95% interval |
+| --- | ---: | ---: | ---: | ---: |
+| hybrid.r1 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| hybrid.r2 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| hybrid.r3 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| range (max minus min) | 0.000 |  | 0.000 |  |
+
+Each repeat answers the same questions, so the repeats are not independent trials and their counts are not pooled into one interval.
 <!-- p2:end repeats -->
 
 Does the reranker's gain over its first stage survive the run-to-run variation?
