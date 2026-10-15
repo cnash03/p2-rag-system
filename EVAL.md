@@ -158,7 +158,33 @@ chunking and retrieval, not in the answer step.
 
 **Three-answer audit.**
 
-TODO: for each of three verified in-corpus answers, give the question, the claim, the quote and its cited chunk, and whether the quote actually supports the claim.
+The test for each claim: does the quote, read in its cited chunk, establish everything the claim says, or does the claim add something the chunk does not contain?
+
+- **a02**, the minimum incombustible content of combined dust in an underground coal mine where no methane is present.
+  - a02-c1: "The incombustible content of the combined coal dust, rock dust, and other dust must be not less than 80 percent (increased only where methane is present)." 
+  Quote: "maintained in such quantities that the incombustible content of the combined coal dust, rock dust, and other dust shall be not less than 80 percent." 
+  Cited chunk: `cfr30-75.403#0`.
+   **Supported.** The quote states the 80 percent minimum, which is the whole answer to a question that rules methane out. The quote stops before the methane condition in the claim's parenthetical, but the next sentence of the same chunk makes the increase conditional on methane, so the chunk supports the parenthetical even though the quote alone does not.
+- **a04**, how often an underground metal or nonmetal mine must hold evacuation drills.
+  - a04-c1: "Underground metal and nonmetal mines must hold mine evacuation drills at least once every six months." 
+  Quote: "At least once every six months, mine evacuation drills shall be held". 
+  Cited chunk: `cfr30-57.4361#0`.
+   **Supported.** The quote states both the frequency and the requirement; "shall be held" and "must hold" mean the same thing, and the claim adds nothing the quote lacks.
+  - a04-c2: "The drills must be held for each shift, at some time other than a shift change, and involve all persons underground." 
+  Quote: "Be held for each shift at some time other than a shift change and involve all persons underground;". 
+  Cited chunk: `cfr30-57.4361#0`. 
+  **Supported.** Each of the claim's three requirements (every shift, not at a shift change, all persons underground) appears in the quote with no added condition. The quote is a list item with no subject of its own; the claim's subject, "the drills", comes from the lead-in to that list in the same chunk, so the claim reads the quote correctly rather than attaching it to something else.
+- **a07**, how high berms or guardrails must be on the banks of roadways at metal and nonmetal mines.
+  - a07-c1: "Berms or guardrails must be at least mid-axle height of the largest self-propelled mobile equipment that usually travels the roadway (30 CFR 56.9300, surface metal/nonmetal mines)." 
+  Quote: "Berms or guardrails shall be at least mid-axle height of the largest self-propelled mobile equipment which usually travels the roadway." 
+  Cited chunk: `cfr30-56.9300#0`. 
+  **Partly.** The height requirement is word for word in the quote. The parenthetical goes further: "surface metal/nonmetal mines" is in neither the quote nor the chunk, and comes from knowing that Part 56 covers surface mines. The fact is correct, but the citation does not establish it.
+  - a07-c2: "The same height requirement appears in 30 CFR 57.9300 (underground metal/nonmetal mines)." 
+  Quote: the same sentence as a07-c1. 
+  Cited chunk: `cfr30-57.9300#0`. 
+  **Partly.** The main claim holds: the identical sentence appears in the 57.9300 chunk, so the citation shows that the same requirement is written there. But "(underground metal/nonmetal mines)" fails the same test as a07-c1, since it is in neither the quote nor the chunk. It is also imprecise: Part 57 covers both the underground and the surface areas of underground mines.
+
+
 ---
 
 ## 3. Stage 2 - your corpus and your gold set
@@ -304,6 +330,9 @@ Every trace in traces/ that records a Claude call:
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | traces/answers-hybrid.jsonl | hybrid | 12 | 12 | 2 | 103,664 | 3,061 | 52.9 | 8,639 | 255 | 4.4 |
 | traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 0 | 327,780 | 2,266 | 77.1 | 16,389 | 113 | 3.9 |
+| traces/shared-practice-rerank.r1.jsonl | rerank | 20 | 20 | 0 | 209,921 | 2,313 | 79.2 | 10,496 | 116 | 4.0 |
+| traces/shared-practice-rerank.r2.jsonl | rerank | 20 | 20 | 0 | 182,207 | 2,006 | 73.6 | 9,110 | 100 | 3.7 |
+| traces/shared-practice-rerank.r3.jsonl | rerank | 20 | 20 | 0 | 244,753 | 2,300 | 78.8 | 12,238 | 115 | 3.9 |
 | traces/shared-test-rerank.jsonl | rerank | 40 | 40 | 0 | 614,886 | 4,416 | 150.6 | 15,372 | 110 | 3.8 |
 
 A span is one query of a run, one question of an answers file, or one claim of a judged file. A saved reply costs nothing now, so it counts the tokens and the seconds of the call that made it.
@@ -354,7 +383,26 @@ Write the five things here.
 Three runs of the reranker on the practice queries, and three answers files, with their run-to-run spread and Wilson intervals.
 
 <!-- p2:begin repeats -->
-_No repeated runs or answers files yet (598E: `p2 run ... --repeat 3` and `p2 answer ... --repeat 3`)._
+Repeated runs of rerank on shared/practice:
+
+| Run | Recall@10 | MRR@10 | nDCG@10 |
+| --- | ---: | ---: | ---: |
+| rerank.r1 | 0.783 | 0.850 | 0.796 |
+| rerank.r2 | 0.783 | 0.850 | 0.796 |
+| rerank.r3 | 0.783 | 0.850 | 0.796 |
+| range (max minus min) | 0.000 | 0.000 | 0.000 |
+
+| Comparison | Metric | Mean difference | 95% interval | Reading |
+| --- | --- | ---: | ---: | --- |
+| rerank.r1 minus hybrid | Recall@10 | -0.033 | [-0.150, +0.050] | not distinguishable |
+| rerank.r2 minus hybrid | Recall@10 | -0.033 | [-0.150, +0.050] | not distinguishable |
+| rerank.r3 minus hybrid | Recall@10 | -0.033 | [-0.150, +0.050] | not distinguishable |
+| rerank.r1 minus hybrid | MRR@10 | +0.157 | [-0.029, +0.333] | not distinguishable |
+| rerank.r2 minus hybrid | MRR@10 | +0.157 | [-0.029, +0.333] | not distinguishable |
+| rerank.r3 minus hybrid | MRR@10 | +0.157 | [-0.029, +0.333] | not distinguishable |
+| rerank.r1 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
+| rerank.r2 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
+| rerank.r3 minus hybrid | nDCG@10 | +0.146 | [-0.010, +0.283] | not distinguishable |
 <!-- p2:end repeats -->
 
 Does the reranker's gain over its first stage survive the run-to-run variation?
