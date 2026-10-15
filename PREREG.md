@@ -24,7 +24,7 @@ One sentence, about your own corpus, naming two of your systems and a direction.
 For example: "On my corpus of Kubernetes documentation, `rerank` has a higher MRR@10 than `hybrid`, because the queries are paraphrases that a first-stage fusion ranks too low."
 It should be something you could be wrong about.
 
-TODO: your hypothesis.
+On my corpus of USGS Mineral Commodity Summaries (2024–2026, 267 chapters), rerank has a higher nDCG@10 than hybrid, because the queries are relevant to the documents and the reranker can better capture the semantic relationships.
 
 ---
 
@@ -36,7 +36,15 @@ A difference of 0.02 is usually not worth a reranker's cost in time and tokens.
 In this course, choose a Δ of at least 0.15 unless you argue for a larger one, because a smaller gap takes more queries than one project can judge.
 Call your number Δ (delta).
 
-TODO: your metric and your Δ, with the reason.
+Metric: nDCG@10. Δ = 0.15.
+
+A reranker adds a second model call and extra latency to every query, so it only earns its place if users see clearly better top results. To make 0.15 concrete:
+for a query with a single relevant document, moving it from rank 2 to rank 1 raises nDCG@10 from 0.63 to 1.00, a gain of 0.37. An average gain of 0.15 is therefore roughly that improvement on 4
+queries in 10, which a user would notice. A gain much smaller than that would not justify the extra cost. Δ = 0.15 is also the course minimum, and it keeps the gold set to a size
+I can judge in the time I have.
+
+I chose nDCG@10 over MRR@10 because many questions about this corpus have more than one relevant document (the same commodity's chapter in 2024, 2025 and 2026), and nDCG@10 credits all
+of them rather than only the first. For this pair it also needs 43 queries instead of 64.
 
 ---
 
@@ -65,7 +73,11 @@ After you score the own corpus, the minimum detectable difference that `uv run p
 It should come out at or below your Δ.
 If it does not, your queries varied more than your stage 1 sd suggested, and you will say so in the outcome.
 
-TODO: your sd, which pair it came from, your n, and the number of queries you will write (at least n).
+Pair: rerank vs hybrid (the same pair as my hypothesis), from my stage 1 runs on the shared practice queries.
+sd of per-query nDCG@10 differences: 0.349.
+n = ((1.96 + 0.84) × 0.349 / 0.15)² = (6.515)² ≈ 42.4, rounded up to 43.
+Queries I will write and judge: 50. The stage 1 sd is estimated from only 20 practice queries on a different corpus, so my own queries may vary more; 50 leaves a 
+margin of 7 (about 15%) above n. I did not give ground on Δ, and 50 queries is a number I can write and judge before the deadline.
 
 ---
 
@@ -82,7 +94,7 @@ This is the default rule, and you can tighten it, but do not loosen it after you
 | around zero, with both ends inside plus or minus Δ | well-powered null: a difference as large as Δ is ruled out |
 | around zero, with an end beyond plus or minus Δ | inconclusive: the gold set could not settle it, and I say so |
 
-TODO: confirm or tighten this rule, and name the two systems and the metric once more.
+I adopt this default rule as written. The comparison is rerank minus hybrid on nDCG@10, with Δ = 0.15, so "the direction I predicted" means the interval lies entirely above zero.
 
 ---
 
