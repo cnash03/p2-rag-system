@@ -2,3 +2,53 @@
 # origin is hand when you wrote the query yourself and claude when a model drafted it; at least 10 must be hand.
 # class is a word you choose, for example identifier, paraphrase or mixed as in the shared sets; scores are reported per class.
 # Lines that start with # are comments, so delete these lines or keep them, as you like.
+q01	identifier	tariff on gold dore under HTS 7108.12.1020	hand
+q02	mixed	which state mines the most gold in the US	hand
+q03	identifier	New Madrid MO aluminum smelter shutdown 2024	hand
+q04	paraphrase	what can replace the lightweight metal used in drink cans and car bodies	hand
+q05	mixed	did China cut off germanium exports to the US in 2024	hand
+q06	paraphrase	where does the US import the metal used in infrared lenses and fiber optics from	hand
+q07	identifier	Hibbing MN direct-reduction grade pellets	hand
+q08	mixed	is the US a net importer or exporter of iron ore	hand
+q09	mixed	when did the US last mine its own manganese ore	hand
+q10	paraphrase	which steelmaking ingredient has no good substitute	hand
+q11	identifier	Eagle Mine Michigan nickel output	hand
+q12	mixed	why did nickel prices fall in 2024	hand
+q13	mixed	how much palladium is recovered from scrapped car catalytic converters in the US	hand
+q14	identifier	Bushveld Complex reserves	hand
+q15	mixed	what share of US silver demand goes to solar panels	hand
+q16	paraphrase	which state mines the most of the metal used in mirrors and photographic film	hand
+q17	identifier	Middle Tennessee zinc mines suspended	hand
+q18	paraphrase	what can automakers use instead of rust-proof coated steel sheet	hand
+q19	identifier	cobalt import sources 2020-23	claude
+q20	identifier	graphite consumption United States 2024	claude
+q21	identifier	salt production tons 2024	claude
+q22	identifier	2024 cement production decrease percentage	claude
+q23	identifier	cobalt purchased scrap share of consumption in 2024	claude
+q24	identifier	copper mine production change from 2023 to 2024	claude
+q25	identifier	potash marketable sales value increase in 2024	claude
+q26	identifier	Grade-A helium sales volume 2025	claude
+q27	identifier	rare earth oxide concentrate production 2024	claude
+q28	identifier	niobium last reported US mine production	claude
+q29	identifier	tungsten last commercially mined in the United States	claude
+q30	paraphrase	what can replace the blue metal used in rechargeable car batteries	claude
+q31	paraphrase	which gas has no replacement for very cold laboratory equipment	claude
+q32	paraphrase	is there anything farmers can use instead of the main phosphorus fertiliser	claude
+q33	paraphrase	where does the United States buy most of the material it spreads on icy roads	claude
+q34	paraphrase	which country supplies most of the potassium fertiliser the United States uses	claude
+q35	paraphrase	what is used instead of the strong light metal in aircraft parts	claude
+q36	paraphrase	has the United States stopped digging up the metal used in light bulb filaments	claude
+q37	paraphrase	what replaces the shiny conductive metal in power cables	claude
+q38	paraphrase	which mineral used in pencils is no longer mined in America	claude
+q39	paraphrase	what is used instead of the metal that stops paint from catching fire	claude
+q40	paraphrase	can anything take the place of the salt we eat and use in industry	claude
+q41	paraphrase	what do they use instead of the hard metal in cutting tools	claude
+q42	paraphrase	how much of the mineral used in drywall did the US dig up in 2024	claude
+q43	mixed	lithium prices and commercial production in 2024	claude
+q44	mixed	cobalt substitutes in lithium-ion batteries	claude
+q45	mixed	helium recycling in large-volume applications	claude
+q46	mixed	copper substitutes in automobile radiators	claude
+q47	mixed	lithium battery recycling plants construction	claude
+q48	mixed	rare earth recycling from batteries and permanent magnets	claude
+q49	mixed	phosphate rock imports from Peru	claude
+q50	mixed	antimony recovered at secondary lead smelters	claude
