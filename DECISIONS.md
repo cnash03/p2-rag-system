@@ -26,7 +26,14 @@ Commit this answer before your first `uv run p2 score` on the own corpus.
 Git history then shows that the expectation came first, which is what lets it be wrong in a way that teaches you something.
 If you were surprised later, say so in prompt 4 or in EVAL.md; do not come back and rewrite this one.
 
-TODO: your answer to prompt 1.
+For stage 2 I used the USGS Mineral Commodity Summaries that contains 267 chapters covering the 2024 through 2026, about 1,060 words each. 
+I picked it partly because it contrasts with the stage 1 corpus. 30 CFR is numbered legal text full of identifiers. The USGS chapters are 
+short prose with production tables, so I can test whether hybrid’s stage 1 advantage holds once exact identifiers mostly disappear. 
+The texts are also federal public-domain works, so licensing check was a simple pass. It matters to me because mines focuses on critical minerals and 
+one of my old roommates works in the geology industry which I have learned much about in my time living with her. I expect rerank to win.
+It performed well on stage 1 (nDCG@10 0.789), and a cross-encoder that reads the query and chapter together should handle the specific production 
+and price questions this corpus invites. I expect dense to do worst. It was already lowest on stage 1 nDCG@10 (0.480). Here, the chapters for the same 
+commodity in different years will embed almost identically, so dense will have little basis for putting the right year first. 
 
 ---
 
