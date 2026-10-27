@@ -195,7 +195,17 @@ What is it, where did it come from, how many documents and how many megabytes, a
 Name the one or two documents you were least sure about and what you decided.
 Say which of the allowed sources in the brief it comes from.
 
-TODO: describe your corpus and its license basis.
+The corpus is the USGS Mineral Commodity Summaries, the U.S. Geological Survey’s annual one-chapter-per-commodity reports on production, 
+imports, prices, substitutes, recycling and reserves. I used the 2024 through 2026 editions, which is 267 chapters. Each document is 
+one commodity’s chapter for one year (for example, mcs2025-gold). The corpus is about 1.9 MB of text and 285,068 words. Two editions would
+have given only 178 chapters, under the 200-document requirement, which is why I included three. It comes from the allowed category “US federal government \
+works (us-gov-public-domain)”, and the brief lists these summaries by name as a suggested corpus. The front matter warns that copyrighted material inside, such as a photo credited to 
+a company, would need permission. A search of every document for “copyright”, “©”, “courtesy” and “reprinted” found none. The p2 license reported 267 ok and 0 flagged.
+
+The documents I was least sure about were mcs2024-silver_old and mcs2025-soda-ash-ver.1.0, they are near-identical copies of mcs2024-silver and 
+mcs2025-soda-ash that came from the USGS folders with those names. Their licensing was not in question which is why I kept them. Each differs from its partner only in 
+the title line, whitespace and one capital letter. I kept them, and I label both copies of a pair relevant whenever one is, so that neither copy 
+is penalized for matching the other.
 
 ### The gold set
 
@@ -204,8 +214,12 @@ How did you decide that a document is relevant: write your relevance rule in two
 How did you find candidates (the systems' top 10, a keyword search, reading), and did you read every document before you labeled it?
 Your labels are binary (`rel` 1) unless you say otherwise: if you use graded labels, declare the scale here, for example 2 means the document answers the query fully and 1 means it helps.
 
-TODO: describe your gold set and your relevance rule.
+TODO: describe your gold set.
 
+A chapter is relevant to a query if it states the fact the query asks about for that commodity. When the query does not name a year, 
+the parallel chapters from the 2024, 2025 and 2026 editions are all relevant, because the same commodity is summarized once in each edition, 
+and a superseded duplicate copy of a chapter is labeled the same as the chapter it copies. A chapter that only mentions the commodity in 
+passing, such as a co-product or a substitute listed in another commodity’s chapter, is not relevant.
 ---
 
 ## 4. Stage 2 - results on your corpus
@@ -213,26 +227,65 @@ TODO: describe your gold set and your relevance rule.
 Scores per system on your gold set.
 
 <!-- p2:begin own -->
-_No scored runs here yet: run `uv run p2 run --corpus own --system bm25` (or `--all`), then `uv run p2 score`._
+| System | Recall@10 | MRR@10 | nDCG@10 |
+| --- | ---: | ---: | ---: |
+| bm25 | 0.753 | 0.615 | 0.651 |
+| dense | 0.803 | 0.717 | 0.717 |
+
+50 judged queries; nDCG uses binary labels; a random ranking of the 267 documents would get recall@10 near 0.037.
 <!-- p2:end own -->
 
 The same scores per query class.
 
 <!-- p2:begin own-classes -->
-_No scored runs here yet: run `uv run p2 run --corpus own --system bm25` (or `--all`), then `uv run p2 score`._
+| System | Metric | identifier (n=17) | mixed (n=15) | paraphrase (n=18) |
+| --- | --- | ---: | ---: | ---: |
+| bm25 | Recall@10 | 1.000 | 1.000 | 0.315 |
+| bm25 | MRR@10 | 0.803 | 0.906 | 0.194 |
+| bm25 | nDCG@10 | 0.849 | 0.935 | 0.228 |
+| dense | Recall@10 | 0.941 | 1.000 | 0.509 |
+| dense | MRR@10 | 0.755 | 0.967 | 0.474 |
+| dense | nDCG@10 | 0.799 | 0.965 | 0.433 |
 <!-- p2:end own-classes -->
 
 The same scores for the queries you wrote yourself (`hand`) and the ones a model drafted (`claude`), with the difference between the two groups and its interval.
 Once both groups have queries, the table also says whether `bm25`'s lead over `dense` differs between them, and what share of each query's content words its best relevant document contains, which is stretch option 6.
 
 <!-- p2:begin own-origins -->
-_No scored runs here yet: run `uv run p2 run --corpus own --system bm25` (or `--all`), then `uv run p2 score`._
+| System | Metric | hand (n=18) | claude (n=32) | hand minus claude | 95% interval | Reading |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| bm25 | Recall@10 | 0.907 | 0.667 | +0.241 | [+0.044, +0.434] | hand higher |
+| bm25 | MRR@10 | 0.755 | 0.536 | +0.219 | [-0.009, +0.443] | not distinguishable |
+| bm25 | nDCG@10 | 0.803 | 0.565 | +0.238 | [+0.031, +0.442] | hand higher |
+| dense | Recall@10 | 0.778 | 0.818 | -0.040 | [-0.260, +0.171] | not distinguishable |
+| dense | MRR@10 | 0.731 | 0.709 | +0.022 | [-0.206, +0.244] | not distinguishable |
+| dense | nDCG@10 | 0.728 | 0.711 | +0.018 | [-0.202, +0.227] | not distinguishable |
+
+The hand and claude queries are different queries, so the interval of hand minus claude comes from resampling the queries within each group (10,000 times), not from pairing them.
+
+Do model-written queries favor keyword search? bm25's lead over dense (bm25 minus dense, per query) on the claude queries and on the hand queries, and claude minus hand:
+
+| Metric | Lead on claude | Lead on hand | Claude minus hand | 95% interval | Reading |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Recall@10 | -0.151 | +0.130 | -0.281 | [-0.477, -0.103] | bm25 gains more on hand queries |
+| MRR@10 | -0.174 | +0.023 | -0.197 | [-0.417, +0.010] | not distinguishable |
+| nDCG@10 | -0.145 | +0.075 | -0.220 | [-0.411, -0.042] | bm25 gains more on hand queries |
+
+Mean content-word overlap, the share of a query's content words found in its best relevant document: hand 0.70 (18 queries), claude 0.74 (32 queries).
+
+Stretch option 6 asks for at least 20 judged queries of each origin; here there are 18 hand and 32 claude.
 <!-- p2:end own-origins -->
 
 Differences between every pair of systems.
 
 <!-- p2:begin own-pairs -->
-_No scored runs here yet: run `uv run p2 run --corpus own --system bm25` (or `--all`), then `uv run p2 score`._
+| Comparison | Metric | Mean difference | 95% interval | MDD | Reading |
+| --- | --- | ---: | ---: | ---: | --- |
+| dense minus bm25 | Recall@10 | +0.050 | [-0.057, +0.157] | 0.152 | not distinguishable |
+| dense minus bm25 | MRR@10 | +0.103 | [-0.008, +0.211] | 0.156 | not distinguishable |
+| dense minus bm25 | nDCG@10 | +0.066 | [-0.034, +0.162] | 0.140 | not distinguishable |
+
+The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end own-pairs -->
 
 Which differences are distinguishable and which are not, at your gold-set size?
@@ -354,6 +407,8 @@ Systems that do not call Claude, from traces/retrieval/ on the machine that last
 
 | Trace | System | Queries | Seconds | Milliseconds per query |
 | --- | --- | ---: | ---: | ---: |
+| traces/retrieval/own-own-bm25.jsonl | bm25 | 50 | 0.03 | 0.7 |
+| traces/retrieval/own-own-dense.jsonl | dense | 50 | 0.26 | 5.1 |
 | traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.04 | 1.9 |
 | traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.17 | 8.5 |
 | traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.22 | 11.0 |
