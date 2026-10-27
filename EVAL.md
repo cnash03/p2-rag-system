@@ -329,6 +329,9 @@ TODO: write what your own-corpus intervals let you claim.
 
 Change one thing and keep everything else the same.
 Write your hypothesis here before you run it, in one sentence with a direction: "I expect X to raise MRR@10 on my corpus because Y."
+I expect embedding whole chapters instead of 300-word chunks in dense (dense_whole) to lower MRR@10 on my corpus because bge-small truncates 
+at 512 tokens (about 380 words), so the Events, Trends, and Issues and Substitutes sections, which start around words 433 and 879, are never 
+embedded, and the queries answered there (q03, q04, q10, q12, q18, q30–q32, q35, q37, q39–q41, q44–q48) should drop while early-section queries stay flat.
 The run file for it lives in `runs/own/ablation/`.
 
 <!-- p2:begin own-ablation -->
