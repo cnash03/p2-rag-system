@@ -404,6 +404,37 @@ Read the queries at the top of each list in the second table, and say whether yo
 
 TODO: write the ablation: the one change, the hypothesis, the result and the claim.
 
+**Change.** One change to dense: `chunk_words=0`, so each of the 267 chapters is embedded as a single vector
+instead of being split into 300-word chunks. Model (bge-small-en-v1.5), queries, and k are unchanged.
+
+**Hypothesis (committed before the run).** I expect embedding whole chapters to lower MRR@10, because bge-small truncates 
+at 512 tokens, so the Events and Substitutes sections are never embedded and the queries answered there should drop.
+
+**Result.** On MRR@10, dense_whole minus dense is −0.092, 95% CI [−0.188, −0.008]. The whole interval is below zero, which matches 
+the predicted direction. The minimum detectable difference is 0.133, though, and the observed gap is smaller than that, so this run was 
+underpowered for an effect of this size. I read the result as weak support for "whole chapters hurt MRR@10," not as a precise estimate of 
+how much. On nDCG@10 (−0.051 [−0.128, +0.015]) and recall@10 (−0.037 [−0.113, +0.027]), the difference can't be distinguished from zero.
+
+**Per-query.** 36 of 50 queries were unchanged, 10 were hurt, and 4 were helped.
+- Of the 18 queries I predicted would drop, only 5 did (q10, q30, q39, q41, q44). The 13 that didn't change fall into two groups. Four (q04, q18, q35, q37) already scored 0 under dense. They are p
+araphrase queries that never name the metal (e.g. "lightweight metal used in drink cans"), so whole chapters had nothing to take away. The other nine stayed at the same rank under both systems: seven
+ at rank 1 (q31, q32, q40, q45, q46, q47, q48) and two at rank 2 (q03, q12). These queries name or clearly describe the commodity (helium, salt, copper, lithium, rare earths, and so on), and that 
+ wording appears in the chapter title and opening, which are embedded either way. My hypothesis predicted drops by where the answer sits, but these results suggest that whether the query names the 
+ commodity mattered more.
+- 5 queries I didn't predict also dropped, and only three of them are explained by truncation. The 512-token limit ends around words 282–326 with the model's own tokenizer, not the ~380 I estimated, 
+because the numbers in the statistics tables split into many tokens. That cuts off Import Sources as well:
+  - q06 (germanium imports): Import Sources starts at words 381–390 and the cutoff is around word 320. Dense ranked two germanium chapters 1–2, while dense_whole returned none in its top 5.
+  - q07 ("Hibbing MN direct-reduction grade pellets"): "Hibbing" is at word 548 in mcs2025-iron-ore, past a cutoff at word 286. RR went from 1.00 to 0.
+  - q34 (potash import source): the cutoff is word 304 and Import Sources starts at word 390. The answer fell from rank 2 to rank 5, with the nitrogen chapters, another fertilizer, taking ranks 1–3.
+  - q05 and q16 are not truncation, since their key terms appear before the cutoff ("export" at word 51, "mirror" around word 193). In both, whole chapters ranked an unlabeled chapter first and pushed 
+  the relevant one to rank 2. For q05 that chapter was mcs2024-germanium, an older edition I didn't label for this query. For q16 it was mcs2024-silver_old, a duplicate copy that my rule (EVAL.md:219–222) says 
+  should carry the same label as the chapter it copies. So q16's drop is a labeling gap, not a retrieval loss, and with the label fixed it would likely count as unchanged.
+- 4 queries improved (q25, q36, q38, q42). All of them ask about Domestic Production and Use, at the start of the chapter, which is still embedded and now sits in one vector with the chapter's title and commodity name.
+
+**Takeaway.** Truncation is real and starts earlier than I assumed: it explains 5 predicted drops plus q06, q07 and q34. But section position alone was a weak predictor. Most Events/Substitutes queries didn't move, because 
+they either name the commodity or were already failing. Two of the ten drops (q05, q16) come from unlabeled chapters outranking labeled ones, so the measured MRR@10 loss slightly overstates the retrieval loss. This ablation 
+measures truncation, chunk size, and label coverage together.
+
 ---
 
 ## 6. Failure analysis
