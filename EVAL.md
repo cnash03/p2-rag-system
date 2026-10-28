@@ -653,7 +653,7 @@ Write what the spread is, how it compares with the gain, and what the Wilson int
 The three rerank repeats gave identical scores (recall@10 0.783, MRR@10 0.850, nDCG@10 0.796), so the run-to-run range is 0.000 on every score. Rerank's gain over
 hybrid (MRR@10 +0.157, nDCG@10 +0.146) is therefore not an artifact of one lucky run. But that gain was never distinguishable from zero at 20 queries ([−0.029, +0.333] and [−0.010, +0.283]), so repeating
 the run makes it more reproducible, not more certain. The limit is the number of queries, not run-to-run noise. Two details: the original run's nDCG@10 (0.789) differs slightly from the repeats' (0.796), so 
-the rankings are not perfectly reproducible across sessions, and input tokens varied between repeats (about 182,000 to 245,000) even though the rankings did not and input tokens varied even though the rankings did not: about 182,000 to 245,000 across the three repeats, or 182,000 to 328,000 counting the original run. 
+the rankings are not perfectly reproducible across sessions, and input tokens varied even though the rankings did not: about 182,000 to 245,000 across the three repeats, or 182,000 to 328,000 counting the original run. 
 The variation is per call, not per run. The same query with the same 20 candidates, and so an identical prompt, was counted at very different sizes in different 
 runs: for example 6,933 and 28,156 tokens for p01. p2/claude.py counts input as fresh tokens plus prompt-cache reads and writes, so the extra 15,000–21,000 tokens on some calls were context the CLI added 
 on top of my prompt. The cause is not visible in the traces. The variation comes from neither my prompt nor the candidates, and it did not change any ranking.
