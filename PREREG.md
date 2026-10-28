@@ -105,8 +105,25 @@ Which row of the table in section 4 is it?
 Did your gold set reach the size section 3 asked for, and what was the minimum detectable difference that `uv run p2 score` printed?
 What would you do next, and what would you want a reader to take from this?
 
-TODO: your outcome.
 
+**Interval.** rerank minus hybrid on nDCG@10 is +0.142, with a 95% paired interval of [+0.073, +0.215] over 50 queries (EVAL.md, own-pairs).
+
+**Row.** The interval is entirely above zero in the predicted direction, so by my section 4 rule the hypothesis is **supported: the 
+difference is distinguishable from zero.** That is all the rule claims. The mean (+0.142) is just under my Δ of 0.15, and the interval contains Δ, so 
+this gold set does not show that the gain is at least as large as the smallest effect I said would matter to a user. It also does not rule that out.
+
+**Gold-set size.** Section 3 called for 43 queries, and I judged 50. The per-query sd on my corpus was 0.258, lower than the 0.349 I estimated from 
+the stage 1 practice queries, so the minimum detectable difference that `p2 score` printed was 0.102, well under Δ. At that sd, about 23 queries would 
+have been enough.
+
+**What a reader should take from it.** On this corpus, reranking hybrid's top 20 with Claude reliably improves nDCG@10, at a cost of about 8,900 input tokens 
+and 5.2 seconds per query. Most of the gain is on paraphrase queries (hybrid 0.390 → rerank 0.673), against 0.853 → 0.946 on identifier queries and 0.969 → 0.998 on mixed. That is consistent 
+with my reason in section 1, though the per-class means have no intervals and each class has only 15–18 queries. The 22 queries rerank helped, against 4 it hurt, point the same way.
+
+**Next.** This result says rerank beats hybrid, not that it beats it by at least Δ. To test that, I would pre-register the stronger claim (lower interval end above 0.15)
+and judge more queries, or narrow it to paraphrase queries, where the gain is concentrated. Separately, the failure analysis in EVAL.md section 6 shows the reranker is not the
+bottleneck on the paraphrase misses: in three of them, no relevant chapter reached hybrid's top 20. So I would also test a deeper first stage (fusing more than each arm's top 10,
+or passing the reranker more than 20 candidates) before spending on a better reranker.
 ---
 
 ## 6. Amendments

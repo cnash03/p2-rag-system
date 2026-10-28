@@ -214,12 +214,19 @@ How did you decide that a document is relevant: write your relevance rule in two
 How did you find candidates (the systems' top 10, a keyword search, reading), and did you read every document before you labeled it?
 Your labels are binary (`rel` 1) unless you say otherwise: if you use graded labels, declare the scale here, for example 2 means the document answers the query fully and 1 means it helps.
 
-TODO: describe your gold set.
+The gold set has 50 queries: 18 written by hand (`hand`) and 32 drafted by Claude (`claude`). I used the same three classes as the shared corpus, so the two corpora can be compared class by class: 
+17 identifier queries (a named commodity, place, code or year, such as q07 "Hibbing MN direct-reduction grade pellets"), 18 paraphrase queries that describe a commodity without naming it (such as "lightweight metal 
+used in drink cans"), and 15 mixed. Labels are binary (`rel` 1).
+
+For each query I pooled three candidate lists on a judging page: bm25's top 10, dense's top 10, and a keyword search's top 10 that ranked all 267 chapters by how many of the query's content words they contain. I could 
+also add any other docid by hand. The page showed the three sentences in each chapter that best matched the query. I judged from those sentences. Hybrid and rerank were not in the pool, since I had not run them on my corpus 
+yet, so a chapter that only those systems surfaced may be unjudged and would count as a miss.
 
 A chapter is relevant to a query if it states the fact the query asks about for that commodity. When the query does not name a year, 
 the parallel chapters from the 2024, 2025 and 2026 editions are all relevant, because the same commodity is summarized once in each edition, 
 and a superseded duplicate copy of a chapter is labeled the same as the chapter it copies. A chapter that only mentions the commodity in 
 passing, such as a co-product or a substitute listed in another commodity’s chapter, is not relevant.
+
 ---
 
 ## 4. Stage 2 - results on your corpus
@@ -340,7 +347,29 @@ Which differences are distinguishable and which are not, at your gold-set size?
 Do the `hand` queries and the `claude` queries tell the same story?
 Did your prediction in `DECISIONS.md` prompt 1 hold?
 
-TODO: write what your own-corpus intervals let you claim.
+**Distinguishable.** `rerank` is higher than every other system on all three scores, including against `hybrid` (nDCG@10 +0.142 [+0.073, +0.215], 
+MRR@10 +0.183 [+0.083, +0.285]). `hybrid` is higher than `bm25` on MRR@10 (+0.099 [+0.042, +0.165]) and nDCG@10 (+0.070 [+0.018, +0.127]), but not on 
+recall@10. Several of these gaps are smaller than their MDD (hybrid minus bm25 on nDCG@10: 0.070 against an MDD of 0.079; rerank minus hybrid on recall@10: 0.057 
+against 0.065). Their intervals exclude zero, but the gold set was not built to detect effects that small, so I treat the direction as shown and the size as uncertain.
+
+**Not distinguishable.** `dense` against `bm25` on every score. The MRR@10 interval [−0.008, +0.211] only just reaches zero, so a moderate dense advantage is plausible 
+but not shown. `hybrid` against `dense` is a close null: the gaps are 0.017 or less, and the nDCG@10 interval [−0.047, +0.066] rules out a difference larger than about 
+0.07 either way. On this corpus, fusing `bm25` into `dense` adds essentially nothing on average.
+
+**Classes.** The per-class tables have no intervals, so these are descriptive. Identifier and mixed queries are close to solved by every system (nDCG@10 0.80–1.00). 
+The systems separate on the 18 paraphrase queries, where `bm25` scores 0.228, `dense` 0.433, `hybrid` 0.390 and `rerank` 0.673. Almost all of rerank's advantage comes 
+from there.
+
+**Hand versus claude.** The two groups mostly tell the same story. The one distinguishable difference is `bm25`, which scores higher on hand queries (nDCG@10 +0.238 [+0.031, +0.442]). 
+bm25's lead over dense also reverses between the groups: it leads on hand queries (+0.075 nDCG@10) and trails on claude queries (−0.145), a difference that is distinguishable on recall@10 
+and nDCG@10. Content-word overlap is similar for both groups (hand 0.70, claude 0.74), so overlap does not explain it. Class mix explains part of it: Claude wrote 13 of the 18 paraphrase 
+queries, and that is where bm25 falls furthest behind dense (0.130 against 0.458). Even within paraphrases, though, origin matters: my 5 hand-written paraphrases still favor bm25 (0.482 against 
+0.370), so my paraphrases kept more of the document's wording than Claude's did. These origin-by-class cells hold 5 to 13 queries and have no intervals, so they describe the result but do not 
+establish it. With 18 hand queries, this also falls short of the 20 that stretch option 6 asks for.
+
+**Prediction in DECISIONS.md prompt 1.** Half right. `rerank` won, distinguishably. `dense` was not the worst: `bm25` had the lowest scores (nDCG@10 0.651 against dense's 0.717), 
+though the two are not distinguishable. My reason, that editions of the same commodity from different years would embed almost identically, did less damage than I expected, because my 
+relevance rule labels all three editions relevant when a query names no year.
 
 ---
 
@@ -402,7 +431,6 @@ What did you change, what happened, and does the interval support the claim you 
 If the result is not distinguishable, say what size of effect your gold set could have seen.
 Read the queries at the top of each list in the second table, and say whether your change explains them.
 
-TODO: write the ablation: the one change, the hypothesis, the result and the claim.
 
 **Change.** One change to dense: `chunk_words=0`, so each of the 267 chapters is embedded as a single vector
 instead of being split into 300-word chunks. Model (bge-small-en-v1.5), queries, and k are unchanged.
@@ -416,8 +444,8 @@ underpowered for an effect of this size. I read the result as weak support for "
 how much. On nDCG@10 (−0.051 [−0.128, +0.015]) and recall@10 (−0.037 [−0.113, +0.027]), the difference can't be distinguished from zero.
 
 **Per-query.** 36 of 50 queries were unchanged, 10 were hurt, and 4 were helped.
-- Of the 18 queries I predicted would drop, only 5 did (q10, q30, q39, q41, q44). The 13 that didn't change fall into two groups. Four (q04, q18, q35, q37) already scored 0 under dense. They are p
-araphrase queries that never name the metal (e.g. "lightweight metal used in drink cans"), so whole chapters had nothing to take away. The other nine stayed at the same rank under both systems: seven
+- Of the 18 queries I predicted would drop, only 5 did (q10, q30, q39, q41, q44). The 13 that didn't change fall into two groups. Four (q04, q18, q35, q37) already scored 0 under dense. They are 
+paraphrase queries that never name the metal (e.g. "lightweight metal used in drink cans"), so whole chapters had nothing to take away. The other nine stayed at the same rank under both systems: seven
  at rank 1 (q31, q32, q40, q45, q46, q47, q48) and two at rank 2 (q03, q12). These queries name or clearly describe the commodity (helium, salt, copper, lithium, rare earths, and so on), and that 
  wording appears in the chapter title and opening, which are embedded either way. My hypothesis predicted drops by where the answer sits, but these results suggest that whether the query names the 
  commodity mattered more.
@@ -427,7 +455,7 @@ because the numbers in the statistics tables split into many tokens. That cuts o
   - q07 ("Hibbing MN direct-reduction grade pellets"): "Hibbing" is at word 548 in mcs2025-iron-ore, past a cutoff at word 286. RR went from 1.00 to 0.
   - q34 (potash import source): the cutoff is word 304 and Import Sources starts at word 390. The answer fell from rank 2 to rank 5, with the nitrogen chapters, another fertilizer, taking ranks 1–3.
   - q05 and q16 are not truncation, since their key terms appear before the cutoff ("export" at word 51, "mirror" around word 193). In both, whole chapters ranked an unlabeled chapter first and pushed 
-  the relevant one to rank 2. For q05 that chapter was mcs2024-germanium, an older edition I didn't label for this query. For q16 it was mcs2024-silver_old, a duplicate copy that my rule (EVAL.md:219–222) says 
+  the relevant one to rank 2. For q05 that chapter was mcs2024-germanium, an older edition I didn't label for this query. For q16 it was mcs2024-silver_old, a duplicate copy that my relevance rule says 
   should carry the same label as the chapter it copies. So q16's drop is a labeling gap, not a retrieval loss, and with the label fixed it would likely count as unchanged.
 - 4 queries improved (q25, q36, q38, q42). All of them ask about Domestic Production and Use, at the start of the chapter, which is still embedded and now sits in one vector with the chapter's title and commodity name.
 
@@ -443,10 +471,20 @@ Pick the queries where your best system on your own corpus failed: the relevant 
 Take at least five, and read what the system returned next to what was relevant.
 Then sort the failures by cause, for example a vocabulary mismatch, near-duplicate documents, a chunk that cut the answer in half, a query that is ambiguous, or a label that was wrong, because sometimes the gold set is what failed.
 
+I took every query where `rerank`, my best system (nDCG@10 0.864), scored below 0.6 nDCG@10, and checked whether `hybrid`, its first stage, had any relevant chapter in the top 20 it passes to the reranker.
+
 | qid | what the best system returned | what was relevant | cause | what you would try |
 |---|---|---|---|---|
+| q04 | magnesium-metal 2026, boron 2025, lead 2024 | aluminum 2024, bismuth 2025, bismuth 2026 | wrong label: the bismuth chapters mention alumina only as a substitute *for* bismuth, while the aluminum-packaging sentence appears in all three aluminum editions and only 2024 is labeled | relabel by my rule (all three aluminum editions, no bismuth) and rescore; then judge whether the remaining miss is first-stage recall |
+| q18 | iron-steel 2026, chromium 2025, magnesium-metal 2026 | zinc 2024 | first-stage recall: vocabulary mismatch, no zinc chapter in hybrid's top 20 | give the reranker hybrid's top 50, or have Claude name the commodity before retrieval |
+| q35 | magnesium-metal 2026, 2025, 2024 | titanium 2024, 2025, 2026 | first-stage recall: vocabulary mismatch, no titanium chapter in the top 20 | as q18 |
+| q37 | selenium 2024, lead 2024, magnesium-metal 2025 | copper 2024, 2025, 2026 | first-stage recall: vocabulary mismatch, no copper chapter in the top 20 | as q18 |
+| q33 | salt 2026, iron-steel-slag 2024, stone-crushed 2024 | salt 2024, 2025, 2026 | near-duplicate editions: rank 1 is correct, but salt 2024 and 2025 never reached the top 20 | once one edition is retrieved, add its other editions to the candidates |
+| q39 | antimony 2026, boron 2025, asbestos 2025 | antimony 2024, 2025, 2026 | near-duplicate editions: as q33 (only antimony 2026, at hybrid rank 2) | as q33 |
 
-TODO: add one row for each failure you analyzed, and write two or three sentences on the pattern you see across them.
+All six failures are paraphrase queries, and in none of them is the reranker the bottleneck. In three (q18, q35, q37), hybrid's top 20 held no relevant chapter, so there was nothing to promote. In two (q33, q39), rank 1 is right, 
+and nDCG@10 is low only because the other editions of the same commodity were never retrieved; MRR@10 would score both as perfect. One (q04) is at least partly a labeling error. The next thing to test is first-stage depth: hybrid 
+fuses only each arm's top 10. That is the default depth in p2/retrievers/hybrid.py; I compared it only against fusing every document, and only on 30 CFR, so it was never tuned for USGS.
 
 ---
 
@@ -459,7 +497,17 @@ Did the winner change between the shared corpus and yours?
 Why, or why not: what is different about the two collections (document length, vocabulary, identifiers, near-duplicates, how the queries were written), and which of your explanations did you test and which are guesses?
 Say what 20 queries on one side and your gold-set size on the other cannot support.
 
-TODO: write the cross-corpus comparison.
+**Did the winner change?** No. `rerank` has the highest scores on both corpora. On 30 CFR, though, its lead over `hybrid` was not distinguishable (nDCG@10 +0.140 [−0.018, +0.280], 20 queries), while on my corpus it is (+0.142 [+0.073, +0.215], 
+50 queries). The gap is almost the same size. What changed is the number of queries and a smaller per-query spread, which makes it visible.
+
+**What did change.** `dense` went from last on 30 CFR (nDCG@10 0.480) to tied with `hybrid` on USGS (0.717 against 0.721). `hybrid`'s advantage over `dense` went with it: +0.170 nDCG@10, distinguishable, on 30 CFR, and +0.004 on USGS.
+
+**Why, tested and guessed.** Tested, from the per-class tables: on 30 CFR, dense scored 0.211 nDCG@10 on identifier queries, and bm25 rescued hybrid there. On USGS, dense already scores 0.799 on identifier queries, so bm25 has little left to add. 
+Guessed, not tested: USGS "identifiers" are mostly commodity names and places, which a sentence embedding handles, while 30 CFR's are section numbers like 75.403, which it does not. USGS also has fewer, shorter, more uniform documents (267 against 
+2,484; a random recall@10 baseline of 0.037 against 0.004), so it is simply an easier collection. My hybrid settings were chosen on 30 CFR (rrf_k = 1 tuned there, and the default top 10 from each arm kept there) and may not suit USGS.
+
+**What the data cannot support.** Any difference between the corpora is a comparison across different queries, so it has no interval. At 20 queries, 30 CFR's MDDs are mostly above 0.2, so its "not distinguishable" results are not nulls. Per-class 
+comparisons rest on 6–7 queries per class on 30 CFR and 15–18 on USGS.
 
 ---
 
@@ -471,11 +519,13 @@ It is optional, so `uv run p2 check --final` never waits on this section.
 
 Whichever option you chose, write these five things:
 
-1. The option's name.
-2. What you did, and the files that hold it.
-3. The table `p2 score` wrote for it, by name: one of the three below, `own-ablation` and `own-ablation-queries` in section 5 for a second ablation, `own-origins` in section 4 for the hand and claude queries, or `repeats` in section 9 for the rider.
-4. What its interval lets you claim, and what it does not.
-5. One thing you would do next, and what result would tell you it worked.
+1. **Option:** rider (598E).
+2. **What I did:** pre-registered a claim (rerank beats hybrid on nDCG@10 on my corpus, Δ = 0.15, 43 queries needed) in PREREG.md before any judgments, and ran rerank three 
+times on the shared practice queries and the hybrid answers file three times. Files: PREREG.md, runs/shared/rerank.practice.r1.trec to .r3.trec, answers/shared/hybrid.r1–r3, traces/*.r1–r3.jsonl.
+3. **Tables:** `repeats` and `own-pairs` (rerank minus hybrid), both in section 9.
+4. **Claim:** see section 9. The pre-registered difference is distinguishable from zero, but not shown to reach Δ. The repeats show zero run-to-run spread in rankings and answers.
+5. **Next:** two follow-ups, as in PREREG.md section 5: test whether the gain reaches Δ (an interval whose lower end is above 0.15, which needs more queries or a paraphrase-only comparison), 
+and test whether deepening hybrid's first stage closes the paraphrase misses in the section 6 failure table.
 
 For a second ablation, write its hypothesis here before you run it, and commit it, so your history shows that it came first.
 For the hand and claude queries, do the same with your prediction before you score.
@@ -599,7 +649,18 @@ Each repeat answers the same questions, so the repeats are not independent trial
 Does the reranker's gain over its first stage survive the run-to-run variation?
 Write what the spread is, how it compares with the gain, and what the Wilson intervals on the verified share and the declined share say about 8 and 4 questions.
 
-598E: write the repeats result here.
+
+The three rerank repeats gave identical scores (recall@10 0.783, MRR@10 0.850, nDCG@10 0.796), so the run-to-run range is 0.000 on every score. Rerank's gain over
+hybrid (MRR@10 +0.157, nDCG@10 +0.146) is therefore not an artifact of one lucky run. But that gain was never distinguishable from zero at 20 queries ([−0.029, +0.333] and [−0.010, +0.283]), so repeating
+the run makes it more reproducible, not more certain. The limit is the number of queries, not run-to-run noise. Two details: the original run's nDCG@10 (0.789) differs slightly from the repeats' (0.796), so 
+the rankings are not perfectly reproducible across sessions, and input tokens varied between repeats (about 182,000 to 245,000) even though the rankings did not and input tokens varied even though the rankings did not: about 182,000 to 245,000 across the three repeats, or 182,000 to 328,000 counting the original run. 
+The variation is per call, not per run. The same query with the same 20 candidates, and so an identical prompt, was counted at very different sizes in different 
+runs: for example 6,933 and 28,156 tokens for p01. p2/claude.py counts input as fresh tokens plus prompt-cache reads and writes, so the extra 15,000–21,000 tokens on some calls were context the CLI added 
+on top of my prompt. The cause is not visible in the traces. The variation comes from neither my prompt nor the candidates, and it did not change any ranking.
+
+The three answers files were also identical: 7 of 8 in-corpus questions verified and 4 of 4 out-of-corpus questions declined each time. The Wilson intervals show how little 8 and 4 questions 
+can say. A 7/8 verified share is consistent with a true rate anywhere from about 53% to 98%, and 4/4 declined with a true rate as low as 51%. The repeats answer the same questions, so they are not 
+independent trials and cannot be pooled into a tighter interval. Only more questions would narrow these.
 
 ### The pre-registered claim
 
@@ -607,4 +668,14 @@ The claim, the smallest effect, the gold-set size and the test are in `PREREG.md
 Here, say whether you followed the plan, what the interval turned out to be, and what that means.
 The outcome section of `PREREG.md` holds the short version.
 
-598E: write the claim and its outcome here.
+
+I followed the plan as written, with no amendments. The hypothesis (rerank has a higher nDCG@10 than hybrid on my USGS corpus), the metric, Δ = 0.15, the required 43 
+queries and the default decision rule were committed in PREREG.md before the first judgment in eval/own/qrels.txt, and I judged 50 queries.
+
+The interval for rerank minus hybrid on nDCG@10 is +0.142 [+0.073, +0.215]. It lies entirely above zero, so under my rule the claim is supported: the difference is 
+distinguishable from zero. The gold set came out better powered than planned. The per-query sd was 0.258 against the 0.349 I estimated from stage 1, giving an MDD of 0.102, 
+below Δ.
+
+What it means: the test I pre-registered asks whether rerank beats hybrid at all, and the answer is yes. It does not settle whether the gain is at least Δ, the size I said 
+would justify the reranker's cost (about 8,900 input tokens and 5.2 seconds per query). The mean, 0.142, is just under Δ, and the interval runs from about half of Δ to above it. 
+Most of the gain is on paraphrase queries (0.390 → 0.673), which fits my stated reason that the reranker captures meaning the first stage misses, though the class means have no intervals.
